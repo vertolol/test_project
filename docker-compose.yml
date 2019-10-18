@@ -1,0 +1,90 @@
+version: "3"
+
+
+services:
+  go_api:
+    build:
+      context: .
+      dockerfile: docker_files/go_api/Dockerfile
+    restart: always
+    ports:
+      - 80:3001
+    volumes:
+      - ./api/:/usr/src/api/
+    depends_on:
+      - postgres
+      - elastic
+    networks:
+      - postgres_network
+      - elastic_network
+
+  postgres:
+    image: 'postgres:latest'
+    container_name: postgres_host
+    ports:
+      - 5555:5432
+    environment:
+      POSTGRES_USER: gorm
+      POSTGRES_DB: gorm
+      POSTGRES_PASSWORD: gorm
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data
+    networks:
+      - postgres_network
+
+  elastic:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    container_name: elastic_host
+    ports:
+      - 9200:9200
+      - 9300:9300
+    volumes:
+      - elastic_volume:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.monitoring.enabled=false
+      - xpack.watcher.enabled=false
+      - xpack.ml.enabled=false
+    networks:
+      - elastic_network
+
+  rabbit:
+    image: "rabbitmq:3-management"
+    hostname: "rabbit"
+    environment:
+      RABBITMQ_DEFAULT_USER: "rabbitmq"
+      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "6666:5672"
+    networks:
+      - rabbit_network
+
+  receiver:
+    build:
+      context: .
+      dockerfile: docker_files/python_receiver/Dockerfile
+    volumes:
+      - ./rabbitmq:/rabbitmq
+    depends_on:
+      - rabbit
+      - elastic
+      - postgres
+    networks:
+      - rabbit_network
+      - elastic_network
+      - postgres_network
+
+
+volumes:
+  postgres_volume:
+  elastic_volume:
+
+networks:
+  postgres_network:
+    driver: bridge
+  elastic_network:
+    driver: bridge
+  rabbit_network:
+    driver: bridge

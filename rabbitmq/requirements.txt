@@ -1,0 +1,5 @@
+elasticsearch_dsl==7.0.0
+pika==1.1.0
+elasticsearch==7.0.5
+peewee==3.11.2
+psycopg2-binary==2.8.3
