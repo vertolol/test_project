@@ -1,43 +1,33 @@
-from .models import Product
-from .settings import psql_db
+from .models import Product, postgres_database
+from playhouse.postgres_ext import PostgresqlExtDatabase, ArrayField, TextField
+import settings
+import peewee
 
 
-def pg_create_instance(name, price, description):
-    check_table_exist()
-    query = Product.select().where(Product.name == name)
+class Postgres():
+    def __init__(self):
+        postgres_database.connect()
 
-    if query.exists():
-        instance = query.get()
-        update(instance, price, description)
+    def create_instance(self, name, price, description):
+        self._create_table_if_not_exist()
+        query = Product.select().where(Product.name == name)
 
-    else:
-        instance = Product.create(
-            name=name,
-            price=price,
-            description=description
-        )
+        if query.exists():
+            instance = query.get()
+            self._update_instance(instance, price, description)
+        else:
+            instance = Product.create(
+                name=name,
+                price=price,
+                description=description
+            )
+        return instance
 
-    return instance
+    def _update_instance(self, pr, price, description):
+        pr.price = price
+        pr.description = description
+        pr.save()
 
-
-def update(pr, price, description):
-    pr.price = price
-    pr.description = description
-
-    pr.save()
-
-
-def pg_get_id(name):
-    query = Product.select().where(Product.name == name)
-
-    if query.exists():
-        return query.get()
-    else:
-        return None
-
-
-def check_table_exist():
-    if 'products' in psql_db.get_tables():
-        return None
-    else:
-        Product.create_table()
+    def _create_table_if_not_exist(self):
+        if settings.POSTGRES_TABLE_NAME not in postgres_database.get_tables():
+            Product.create_table()

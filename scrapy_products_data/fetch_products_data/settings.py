@@ -15,6 +15,9 @@ SPIDER_MODULES = ['fetch_products_data.spiders']
 NEWSPIDER_MODULE = 'fetch_products_data.spiders'
 
 
+
+
+
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'scrapy_products_data (+http://www.yourdomain.com)'
 

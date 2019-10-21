@@ -1,4 +1,5 @@
 from elasticsearch_dsl import Document, Text, Integer, Keyword
+import settings
 
 
 class Product(Document):
@@ -7,4 +8,4 @@ class Product(Document):
     description = Text()
 
     class Index:
-        name = "products"
+        name = settings.ELASTIC_INDEX_NAME

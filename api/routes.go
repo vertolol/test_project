@@ -1,8 +1,7 @@
 package main
-
-import "github.com/gin-gonic/gin"
-
-
-func initializeRoutes(r *gin.Engine) {
-	r.GET("/search", searchProduct)
-}
+//
+//import "github.com/gin-gonic/gin"
+//
+//func initializeRoutes(r *gin.Engine) {
+//	r.GET("/search", elasticClient.searchProduct)
+//}

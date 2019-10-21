@@ -7,27 +7,27 @@ import (
 )
 
 
-func getInstanceById(id int64) Product{
-	const (
-		user     = "gorm"
-		password = "gorm"
-		dbname   = "gorm"
-		host     = "postgres_host"
-		port     = "5432"
-	)
+type PostgresWorker struct {
+	db *gorm.DB
+}
 
+
+func createPostgresConnection() *gorm.DB {
 	url := fmt.Sprintf("user=%s password=%s DB.name=%s host=%s port=%s sslmode=disable",
-		user,
-		password,
-		dbname,
-		host,
-		port,
+		POSTGRES_USER,
+		POSGRES_PASSWORD,
+		POSTGRES_DB_NAME,
+		POSTGRES_HOST,
+		POSTGRES_PORT,
 	)
 
 	db, err := gorm.Open("postgres", url)
-	defer db.Close()
 	ifPanic(err)
+	return db
+}
 
+
+func getInstanceById(id int64, db *gorm.DB) Product{
 	var product Product
 	db.Find(&product, id)
 

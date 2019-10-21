@@ -7,22 +7,33 @@ import (
 	"strconv"
 )
 
-func getIdsByName(name string) []int64{
-	var (
-		indexName = "products"
-		results []int64
+
+type ElasticWorker struct {
+	client *elastic.Client
+}
+
+
+func createElasticConnection() *elastic.Client{
+	url := fmt.Sprintf("http://%s:%s",
+		ELASTIC_HOST,
+		ELASTIC_PORT,
 	)
 
-	client, err := elastic.NewClient(elastic.SetURL("http://elastic:9200"))
+	client, err := elastic.NewClient(elastic.SetURL(url))
 	ifPanic(err)
+	return client
+}
 
+
+func getIdsByName(name string, client *elastic.Client) []int64{
 	matchQuery := elastic.NewMatchQuery("name", name).Operator("AND")
 	searchResult, err := client.Search().
-		Index(indexName).
+		Index(ELASTIC_INDEX_NAME).
 		Query(matchQuery).
 		Do(context.Background())
 	ifPanic(err)
 
+	var results []int64
 	if searchResult.TotalHits() > 0 {
 		for _, hit := range searchResult.Hits.Hits {
 			id, err := strconv.ParseInt(hit.Id, 10, 64)
@@ -30,7 +41,7 @@ func getIdsByName(name string) []int64{
 			results = append(results, id)
 		}
 	} else {
-		fmt.Printf("Found no %v\n", indexName)
+		fmt.Printf("Found no %v\n", ELASTIC_INDEX_NAME)
 	}
 
 	return results

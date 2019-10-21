@@ -1,22 +1,21 @@
 from .models import Product
-from .settings import client
+from elasticsearch import Elasticsearch
+import settings
 
 
-def elastic_create_document(instance_id, name, price, description):
-    new_doc = Product(
-        name=name,
-        price=price,
-        description=description
-    )
+class Elastic():
+    def __init__(self):
+        host = "http://{}:{}".format(settings.ELASTIC_HOST_NAME,
+                                     settings.ELASTIC_PORT)
+        self.client = Elasticsearch(host)
 
-    new_doc.meta.id = instance_id
-    new_doc.save(using=client, index='products')
+    def create_document(self, instance_id, name, price, description):
+        new_doc = Product(
+            name=name,
+            price=price,
+            description=description
+        )
 
-
-# from elasticsearch_dsl import Search
-# from elasticsearch_dsl.query import Match
-# def search_by_name(name):
-#     query = Match(name={"query": name, "operator": "and"})
-#     result = Search(using=client, index='products').query(query)
-#
-#     return result.execute()
+        new_doc.meta.id = instance_id
+        new_doc.save(using=self.client,
+                     index=settings.ELASTIC_INDEX_NAME)

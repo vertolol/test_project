@@ -3,18 +3,17 @@ import pickle
 
 
 class PutDataInMqPipeline(object):
-    QUEUE_NAME = "product_data"
+    QUEUE = "product_data"
 
     def open_spider(self, spider):
-        credentials = pika.PlainCredentials('rabbitmq', 'rabbitmq')
-        parameters = pika.ConnectionParameters('localhost',
-                                               6666,
-                                               '/',
-                                               credentials)
-        # self.connection = pika.BlockingConnection(pika.URLParameters('amqp://guest:guest@localhost:5672/'))
+        credentials = pika.PlainCredentials(username='rabbitmq',
+                                            password='rabbitmq')
+        parameters = pika.ConnectionParameters(host='localhost',
+                                               port=6666,
+                                               credentials=credentials)
         self.connection = pika.BlockingConnection(parameters)
         self.channel = self.connection.channel()
-        self.channel.queue_declare(queue=self.QUEUE_NAME, durable=True)
+        self.channel.queue_declare(queue=self.QUEUE, durable=True)
 
     def close_spider(self, spider):
         self.connection.close()
@@ -27,7 +26,7 @@ class PutDataInMqPipeline(object):
         body = pickle.dumps(item)
 
         self.channel.basic_publish(exchange='',
-                                   routing_key=self.QUEUE_NAME,
+                                   routing_key=self.QUEUE,
                                    body=body,
                                    properties=pika.BasicProperties(
                                        delivery_mode=2,

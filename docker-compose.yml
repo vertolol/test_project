@@ -5,7 +5,7 @@ services:
   go_api:
     build:
       context: .
-      dockerfile: docker_files/go_api/Dockerfile
+      dockerfile: api/Dockerfile
     restart: always
     ports:
       - 80:3001
@@ -19,7 +19,7 @@ services:
       - elastic_network
 
   postgres:
-    image: 'postgres:latest'
+    image: "postgres:latest"
     container_name: postgres_host
     ports:
       - 5555:5432
@@ -53,8 +53,8 @@ services:
     image: "rabbitmq:3-management"
     hostname: "rabbit"
     environment:
-      RABBITMQ_DEFAULT_USER: "rabbitmq"
-      RABBITMQ_DEFAULT_PASS: "rabbitmq"
+      RABBITMQ_DEFAULT_USER: rabbitmq
+      RABBITMQ_DEFAULT_PASS: rabbitmq
     ports:
       - "15672:15672"
       - "6666:5672"
@@ -64,7 +64,7 @@ services:
   receiver:
     build:
       context: .
-      dockerfile: docker_files/python_receiver/Dockerfile
+      dockerfile: rabbitmq/Dockerfile
     volumes:
       - ./rabbitmq:/rabbitmq
     depends_on:
