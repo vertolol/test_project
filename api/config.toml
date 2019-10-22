@@ -1,0 +1,12 @@
+
+[postgres]
+USER = "gorm"
+PASSWORD = "gorm"
+DB_NAME = "gorm"
+HOST = "postgres_host"
+PORT = "5432"
+
+[elastic]
+INDEX_NAME = "products"
+HOST = "elastic"
+PORT = "9200"
