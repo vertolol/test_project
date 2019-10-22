@@ -1,5 +1,5 @@
-from data_to_postgres.worker import Postgres
-from data_to_elastic.worker import Elastic
+from data_to_postgres.worker import PostgresWorker
+from data_to_elastic.worker import ElasticWorker
 import settings
 import pika
 import pickle
@@ -17,8 +17,8 @@ class RabbitMqWorker():
         self.channel.basic_consume(queue=settings.RABBIT_QUEUE_NAME,
                                    on_message_callback=self.callback)
 
-        self.elastic = Elastic()
-        self.postgres = Postgres()
+        self.elastic = ElasticWorker()
+        self.postgres = PostgresWorker()
 
     def _create_connection(self):
         credentials = pika.PlainCredentials(username=settings.RABBIT_USERNAME,

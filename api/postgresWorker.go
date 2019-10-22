@@ -28,9 +28,9 @@ func createPostgresConnection() *gorm.DB {
 }
 
 
-func (postgresWorker *PostgresWorker) getInstanceById(id int64) Product{
+func (postgres PostgresWorker) getInstanceById(id int64) Product{
 	var product Product
-	postgresWorker.db.Find(&product, id)
+	postgres.db.Find(&product, id)
 
 	return product
 }

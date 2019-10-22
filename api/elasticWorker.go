@@ -26,7 +26,7 @@ func createElasticConnection() *elastic.Client{
 }
 
 
-func (client *ElasticWorker) getIdsByName(name string) []int64{
+func (client ElasticWorker) getIdsByName(name string) []int64{
 	matchQuery := elastic.NewMatchQuery("name", name).Operator("AND")
 	searchResult, err := client.client.Search().
 		Index(ELASTIC_INDEX_NAME).

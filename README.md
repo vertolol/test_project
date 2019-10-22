@@ -3,7 +3,7 @@
 docker-compose up --build
 
 # in browser
-http://0.0.0.0/search?name=ITEM NAME
+http://0.0.0.0/search?name="ITEM NAME"
 
 
 # in scrapy_products_data
