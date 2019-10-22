@@ -1,5 +1,5 @@
-from data_to_postgres.func import Postgres
-from data_to_elastic.func import Elastic
+from data_to_postgres.worker import Postgres
+from data_to_elastic.worker import Elastic
 import settings
 import pika
 import pickle

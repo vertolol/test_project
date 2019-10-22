@@ -9,16 +9,16 @@ import (
 func (client *ElasticWorker) searchProduct(c *gin.Context) {
 	name := c.Query("name")
 
-	ids := getIdsByName(name, client.client)
-	db := createPostgresConnection()
+	ids := client.getIdsByName(name)
+	db := &PostgresWorker{db: createPostgresConnection()}
 
 	var result []Product
 	for _, id := range ids {
-		product := getInstanceById(id, db)
+		product := db.getInstanceById(id)
 		result = append(result, product)
 	}
 
-	db.Close()
+	db.db.Close()
 
 	c.JSON(
 		http.StatusOK,

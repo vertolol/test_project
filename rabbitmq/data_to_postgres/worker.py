@@ -1,10 +1,9 @@
-from .models import Product, postgres_database
-from playhouse.postgres_ext import PostgresqlExtDatabase, ArrayField, TextField
+from .db import postgres_database
+from .models import Product
 import settings
-import peewee
 
 
-class Postgres():
+class PostgresWorker():
     def __init__(self):
         postgres_database.connect()
 

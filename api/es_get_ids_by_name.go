@@ -21,13 +21,14 @@ func createElasticConnection() *elastic.Client{
 
 	client, err := elastic.NewClient(elastic.SetURL(url))
 	ifPanic(err)
+
 	return client
 }
 
 
-func getIdsByName(name string, client *elastic.Client) []int64{
+func (client *ElasticWorker) getIdsByName(name string) []int64{
 	matchQuery := elastic.NewMatchQuery("name", name).Operator("AND")
-	searchResult, err := client.Search().
+	searchResult, err := client.client.Search().
 		Index(ELASTIC_INDEX_NAME).
 		Query(matchQuery).
 		Do(context.Background())

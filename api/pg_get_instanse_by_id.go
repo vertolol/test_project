@@ -23,13 +23,14 @@ func createPostgresConnection() *gorm.DB {
 
 	db, err := gorm.Open("postgres", url)
 	ifPanic(err)
+
 	return db
 }
 
 
-func getInstanceById(id int64, db *gorm.DB) Product{
+func (postgresWorker *PostgresWorker) getInstanceById(id int64) Product{
 	var product Product
-	db.Find(&product, id)
+	postgresWorker.db.Find(&product, id)
 
 	return product
 }

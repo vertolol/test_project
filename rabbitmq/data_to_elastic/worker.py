@@ -3,7 +3,7 @@ from elasticsearch import Elasticsearch
 import settings
 
 
-class Elastic():
+class ElasticWorker():
     def __init__(self):
         host = "http://{}:{}".format(settings.ELASTIC_HOST_NAME,
                                      settings.ELASTIC_PORT)

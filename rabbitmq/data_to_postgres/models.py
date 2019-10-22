@@ -1,15 +1,7 @@
 import peewee
-from playhouse.postgres_ext import PostgresqlDatabase
+from .db import postgres_database
 from playhouse.postgres_ext import ArrayField, TextField
 import settings
-
-
-postgres_database = PostgresqlDatabase(database=settings.POSTGRES_DB_NAME,
-                             user=settings.POSTGRES_USER_NAME,
-                             password=settings.POSTGRES_PASSWORD,
-                             host=settings.POSTGRES_HOST_NAME,
-                             port=settings.POSTGRES_PORT
-                             )
 
 
 class BaseModel(peewee.Model):
