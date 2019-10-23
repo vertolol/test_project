@@ -7,7 +7,6 @@ import (
 
 
 type PostgresWorker struct {
-	url 		string
 	DB 			*gorm.DB
 }
 

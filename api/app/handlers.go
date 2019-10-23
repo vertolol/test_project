@@ -14,18 +14,11 @@ func (App *App) SearchProduct(c *gin.Context) {
 	ids, err := App.Elastic.GetIdsByName(name)
 	IfError(err)
 
-	db, err := postgres.CreatePostgresConnection(&App.Config.Postgres)
-	IfError(err)
-
-	postgresWorker := &postgres.PostgresWorker{DB: db}
-
 	var result []postgres.Product
 	for _, id := range ids {
-		product := postgresWorker.GetInstanceById(id)
+		product := App.Postgres.GetInstanceById(id)
 		result = append(result, product)
 	}
-
-	postgresWorker.DB.Close()
 
 	c.JSON(
 		http.StatusOK,
@@ -34,4 +27,3 @@ func (App *App) SearchProduct(c *gin.Context) {
 		},
 	)
 }
-

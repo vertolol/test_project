@@ -4,27 +4,39 @@ import (
 	"api/api_routes"
 	"api/app"
 	"api/elastic"
+	"api/postgres"
 	"github.com/BurntSushi/toml"
 	"github.com/gin-gonic/gin"
 )
 
 
+type TomlConfig struct {
+	Elastic   	elastic.ConnectionConfig
+	Postgres  	postgres.ConnectionConfig
+}
+
+
 func main() {
-	var Config app.TomlConfig
+	var Config TomlConfig
 	_, err := toml.DecodeFile("config.toml", &Config)
 	app.IfError(err)
 
-	client, err := elastic.CreateElasticConnection(&Config.Elastic)
+	elastic_connection, err := elastic.CreateElasticConnection(&Config.Elastic)
 	app.IfError(err)
-
 	elasticClient := &elastic.ElasticWorker{
-		Client: client,
+		Client: elastic_connection,
 		Index: Config.Elastic.INDEX_NAME,
+	}
+
+	postgres_connection, err := postgres.CreatePostgresConnection(&Config.Postgres)
+	app.IfError(err)
+	postgresDB := &postgres.PostgresWorker{
+		DB:postgres_connection,
 	}
 
 	App_connections := &app.App{
 		Elastic: *elasticClient,
-		Config: Config,
+		Postgres: *postgresDB,
 	}
 
 	r := gin.Default()
